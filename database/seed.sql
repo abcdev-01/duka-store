@@ -1,6 +1,8 @@
-USE batik_store;
+USE duka_store;
 
--- Admin: username=admin, password=admin
+-- -----------------------------------------------------
+-- Admin — username: admin, password: admin
+-- -----------------------------------------------------
 INSERT INTO
     admin (username, password)
 VALUES (
@@ -8,7 +10,9 @@ VALUES (
         '$2y$10$AIy0X1Ep6alaHDTofiChGeqq7k/d1Kc8vKQf1JZo0mKrzkkj6M626'
     );
 
+-- -----------------------------------------------------
 -- Sample products
+-- -----------------------------------------------------
 INSERT INTO
     products (
         product_code,
@@ -47,7 +51,9 @@ VALUES (
         '5f83a1b5616e3.jpg'
     );
 
+-- -----------------------------------------------------
 -- Sample inventory
+-- -----------------------------------------------------
 INSERT INTO
     inventory (
         material_code,
@@ -74,7 +80,9 @@ VALUES (
         '2020-10-04'
     );
 
+-- -----------------------------------------------------
 -- Sample BOM
+-- -----------------------------------------------------
 INSERT INTO
     product_bom (
         bom_code,
