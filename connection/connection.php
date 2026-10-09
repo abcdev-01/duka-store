@@ -7,7 +7,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 $DB_HOST = "localhost";
 $DB_USER = "root";
 $DB_PASS = "";
-$DB_NAME = "batik_store";
+$DB_NAME = "duka_store";
 
 $conn = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 if (!$conn) {
