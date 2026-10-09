@@ -1,5 +1,5 @@
 <?php
-include 'connection/connection.php';
+require_once __DIR__ . '/connection/connection.php';
 $province_id = $_GET['province_id'] ?? '';
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -8,7 +8,6 @@ curl_setopt_array($curl, [
     CURLOPT_HTTPHEADER => ["key: $RAJAONGKIR_API_KEY"],
 ]);
 $response = curl_exec($curl);
-curl_close($curl);
 $data = json_decode($response, true);
 foreach ($data['rajaongkir']['results'] as $c) {
     echo "<option value='{$c['city_id']}'

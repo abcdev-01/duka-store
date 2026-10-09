@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/connection/connection.php';
 include 'header.php';
 
 if (!isset($_SESSION['customer_code'])) {
@@ -101,7 +102,10 @@ while ($row = mysqli_fetch_assoc($cart_query)) {
             </div>
         </div>
         <br>
-        <button type="submit" class="btn btn-success">Place Order</button>
+		<button type="submit" class="btn btn-success"
+        onclick="return confirm('Place this order now?')">
+    Place Order
+</button>
         <a href="cart.php" class="btn btn-default">Back to Cart</a>
     </form>
 </div>

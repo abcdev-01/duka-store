@@ -1,90 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-	<table>
-		<tr>
-			<th>No</th>
-			<th>Invoice</th>
-			<th>Product Name</th>
-			<th>Price</th>
-			<th>Qty</th>
-			<th>Subtotal</th>
-			<th>Date</th>
-		</tr>
-		<?php 
-		header("Content-type: application/vnd-ms-excel");
-		header("Content-Disposition: attachment; filename=Profit Report.xls");
-		header("Pragma: no-cache");
-		header("Expires: 0");
-		$conn = mysqli_connect("localhost", "root", "", "dbpw192_18410100054");
-		$date1 = $_POST['date1'];
-		$date2 = $_POST['date2'];
-		$result = mysqli_query($conn, "SELECT * FROM produksi WHERE terima = 1 and tanggal between '$date1' and '$date2'");
-		$no=1;
-		$total = 0;
-		while ($row = mysqli_fetch_assoc($result)) {
-			?>
-			<tr>
-				<td><?= $no; ?></td>
-				<td><?= $row['invoice']; ?></td>
-				<td><?= $row['nama_produk']; ?></td>
-				<td><?=  number_format($row['harga']); ?></td>
-				<td><?= $row['qty']; ?></td>
-				<td><?= number_format($row['harga']*$row['qty']); ?></td>
-				<td><?= $row['tanggal']; ?></td>
-			</tr>
-			<?php 
-			$total += $row['harga']*$row['qty'];
-			$no++;
-		}
-		?>
-		<tr>
-			<td colspan="7" class="text-right"><b>Total gross revenue = <?= number_format($total); ?></b></td>
-		</tr>
-	</table>
+<?php
+require_once __DIR__ . '/../connection/connection.php';
+header("Content-Type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=profit_report.xls");
+header("Pragma: no-cache");
+header("Expires: 0");
 
+$d1 = $_POST['date1'] ?? date('Y-m-d');
+$d2 = $_POST['date2'] ?? date('Y-m-d');
+$r = mysqli_query($conn, "SELECT * FROM orders WHERE accepted = 1 AND DATE(date) BETWEEN '$d1' AND '$d2'");
+$gross = 0; $material_cost = 0;
+?>
+<table border="1">
+    <tr>
+        <th>No</th><th>Order ID</th><th>Product</th>
+        <th>Price</th><th>Qty</th><th>Subtotal</th><th>Date</th>
+    </tr>
+    <?php
+    $no = 1;
+    while ($o = mysqli_fetch_assoc($r)) {
+        $details = mysqli_query($conn, "SELECT * FROM order_details WHERE order_id = '{$o['order_id']}'");
+        while ($d = mysqli_fetch_assoc($details)) {
+            $sub = $d['price'] * $d['qty'];
+            $gross += $sub;
 
-	<h4><b>Deduction by Raw Material Cost</b></h4>
-		<table class="table table-striped">
-			<tr>
-				<th>No</th>
-				<th>Raw Material Name</th>
-				<th>Price</th>
-				<th>Requirement</th>
-				<th>Subtotal</th>
-			</tr>
-			<?php 
-			$result = mysqli_query($conn, "SELECT * FROM produksi WHERE terima = 1 and tanggal between '$date1' and '$date2'");
-			$no1=1;
-			$totalb = 0;
-			while ($row = mysqli_fetch_assoc($result)) {
-				$kd = $row['kode_produk'];
-				$bahan = mysqli_query($conn, "SELECT b.kebutuhan as kebutuhan, i.nama as nama, i.harga as harga from bom_produk b join inventory i on b.kode_bk=i.kode_bk WHERE b.kode_produk = '$kd'");
-				while ($row1 = mysqli_fetch_assoc($bahan)) {
-					?>
-					<tr>
-						<td><?= $no1; ?></td>
-						<td><?= $row1['nama']; ?></td>
-						<td><?= $row1['harga']; ?></td>
-						<td><?= $row1['kebutuhan']; ?></td>
-						<td><?= number_format($row1['harga']*$row1['kebutuhan']); ?></td>
-					</tr>
-					<?php 
-					$totalb += $row1['harga']*$row1['kebutuhan'];
-					$no1++;
-				}
-			}
-		?>
-		<tr>
-			<td colspan="7" class="text-right"><b>Total raw material cost = <?= number_format($totalb); ?></b></td>
-		</tr>
-		<tr>
-			<td colspan="7" class="text-right bg-success" style="color: green;"><b>TOTAL NET PROFIT = <?= number_format($total-$totalb); ?></b></td>
-		</tr>
-	</table>
+            $bom = mysqli_query($conn, "
+                SELECT b.requirement, i.price
+                FROM product_bom b
+                JOIN inventory i ON b.material_code = i.material_code
+                WHERE b.product_code = '{$d['product_code']}'
+            ");
+            while ($b = mysqli_fetch_assoc($bom)) {
+                $material_cost += $b['price'] * $b['requirement'] * $d['qty'];
+            }
+            ?>
+            <tr>
+                <td><?= $no++; ?></td>
+                <td><?= htmlspecialchars($o['order_id']); ?></td>
+                <td><?= htmlspecialchars($d['product_name']); ?></td>
+                <td><?= number_format($d['price']); ?></td>
+                <td><?= $d['qty']; ?></td>
+                <td><?= number_format($sub); ?></td>
+                <td><?= $o['date']; ?></td>
+            </tr>
+        <?php } } ?>
+</table>
 
-</body>
-</html>
+<br><br>
+
+<table border="1">
+    <tr><th>Description</th><th>Amount</th></tr>
+    <tr><td>Gross Revenue</td><td><?= number_format($gross); ?></td></tr>
+    <tr><td>Material Cost</td><td>-<?= number_format($material_cost); ?></td></tr>
+    <tr><td><b>Net Profit</b></td><td><b><?= number_format($gross - $material_cost); ?></b></td></tr>
+</table>

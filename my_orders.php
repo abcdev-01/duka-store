@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/connection/connection.php';
 include 'header.php';
 
 if (!isset($_SESSION['customer_code'])) {

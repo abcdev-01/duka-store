@@ -1,4 +1,5 @@
-<?php include 'header.php'; ?>
+<?php
+require_once __DIR__ . '/connection/connection.php'; include 'header.php'; ?>
 
 <div class="container">
     <h2 style="border-bottom:4px solid #ff8680;"><b>How to Order</b></h2>

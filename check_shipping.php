@@ -1,5 +1,5 @@
 <?php
-include 'connection/connection.php';
+require_once __DIR__ . '/connection/connection.php';
 $city_id = $_POST['city_id'] ?? '';
 $courier = $_POST['courier'] ?? '';
 $weight = intval($_POST['weight'] ?? 0);
@@ -16,7 +16,6 @@ curl_setopt_array($curl, [
     ],
 ]);
 $response = curl_exec($curl);
-curl_close($curl);
 $result = json_decode($response, true);
 $costs = $result['rajaongkir']['results'][0]['costs'] ?? [];
 echo "<option value=''>-- Select Package --</option>";

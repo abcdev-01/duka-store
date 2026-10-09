@@ -18,7 +18,7 @@ $date2 = $_POST['date2'] ?? $today;
 </style>
 
 <div class="container">
-    <h2 style="border-bottom:4px solid gray;padding-bottom:5px;"><b>Cancellation Report</b></h2>
+    <h2 style="border-bottom:4px solid gray;padding-bottom:5px;"><b>Inventory Report</b></h2>
 
     <div class="row print">
         <div class="col-md-9">
@@ -36,7 +36,7 @@ $date2 = $_POST['date2'] ?? $today;
         </div>
 
         <div class="col-md-3">
-            <form action="export_cancellations.php" method="POST">
+            <form action="export_inventory.php" method="POST">
                 <table>
                     <tr>
                         <td><input type="hidden" name="date1" value="<?= htmlspecialchars($date1); ?>"></td>
@@ -53,33 +53,40 @@ $date2 = $_POST['date2'] ?? $today;
     <br><br>
 
     <table class="table table-striped">
-        <tr><th>No</th><th>Product</th><th>Date</th><th>Qty</th></tr>
+        <tr>
+            <th>No</th>
+            <th>Material Name</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Date</th>
+        </tr>
         <?php
         if (isset($_POST['submit'])) {
-            $r = mysqli_query($conn, "
-                SELECT od.*, o.date
-                FROM order_details od
-                JOIN orders o ON od.order_id = o.order_id
-                WHERE o.rejected = 1 AND DATE(o.date) BETWEEN '$date1' AND '$date2'
-            ");
-            $no = 1; $total = 0;
-            while ($row = mysqli_fetch_assoc($r)) {
-                $total += $row['qty'];
+            $result = mysqli_query($conn, "SELECT * FROM inventory WHERE date BETWEEN '$date1' AND '$date2'");
+            $no = 1;
+            $total = 0;
+            while ($row = mysqli_fetch_assoc($result)) {
                 ?>
                 <tr>
                     <td><?= $no++; ?></td>
-                    <td><?= htmlspecialchars($row['product_name']); ?></td>
-                    <td><?= date('d M Y', strtotime($row['date'])); ?></td>
-                    <td><?= $row['qty']; ?></td>
+                    <td><?= htmlspecialchars($row['name']); ?></td>
+                    <td><?= htmlspecialchars($row['qty']); ?></td>
+                    <td><?= htmlspecialchars($row['unit']); ?></td>
+                    <td><?= htmlspecialchars($row['date']); ?></td>
                 </tr>
                 <?php
+                $total += (int) $row['qty'];
             }
             ?>
-            <tr><td colspan="4" class="text-right"><b>Total cancelled = <?= $total; ?></b></td></tr>
+            <tr>
+                <td colspan="5" class="text-right"><b>Total of all materials = <?= $total; ?></b></td>
+            </tr>
             <?php
         }
         ?>
     </table>
 </div>
+
 <br><br><br><br><br>
+
 <?php include 'footer.php'; ?>

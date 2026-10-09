@@ -1,4 +1,6 @@
-<?php include 'header.php'; ?>
+<?php
+require_once __DIR__ . '/connection/connection.php';
+ include 'header.php'; ?>
 
 <div class="container-fluid" style="margin:0;padding:0;">
     <div style="margin-top:-21px;">

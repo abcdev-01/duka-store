@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/connection/connection.php';
 include 'header.php';
 $order_id = mysqli_real_escape_string($conn, $_GET['order_id'] ?? '');
 ?>

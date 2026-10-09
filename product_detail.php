@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/connection/connection.php';
 include 'header.php';
 $product_code = mysqli_real_escape_string($conn, $_GET['product'] ?? '');
 $result = mysqli_query($conn, "SELECT * FROM products WHERE product_code = '$product_code'");

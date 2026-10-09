@@ -1,5 +1,5 @@
 <?php
-include 'connection/connection.php';
+require_once __DIR__ . '/connection/connection.php';
 $curl = curl_init();
 curl_setopt_array($curl, [
     CURLOPT_URL => "https://api.rajaongkir.com/starter/province",
@@ -7,7 +7,6 @@ curl_setopt_array($curl, [
     CURLOPT_HTTPHEADER => ["key: $RAJAONGKIR_API_KEY"],
 ]);
 $response = curl_exec($curl);
-curl_close($curl);
 $data = json_decode($response, true);
 echo "<option value=''>-- Select Province --</option>";
 foreach ($data['rajaongkir']['results'] as $p) {

@@ -1,5 +1,5 @@
 <?php
-include 'connection/connection.php';
+require_once __DIR__ . '/connection/connection.php';
 $size = $_POST['size'] ?? '';
 $code = $_POST['code'] ?? '';
 

@@ -1,4 +1,6 @@
-<?php include 'header.php'; ?>
+<?php 
+require_once __DIR__ . '/connection/connection.php';
+include 'header.php'; ?>
 
 <div class="container" style="padding-bottom:250px;">
     <h2 style="border-bottom:4px solid #ff8680;"><b>Login</b></h2>

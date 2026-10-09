@@ -1,4 +1,9 @@
 <?php
+if (isset($conn) && $conn instanceof mysqli) {
+    return;
+}
+?>
+<?php
 $DB_HOST = "localhost";
 $DB_USER = "root";
 $DB_PASS = "";

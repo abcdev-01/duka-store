@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../connection/connection.php';
+require_once __DIR__ . '/../connection/connection.php';
 if (!isset($_SESSION['admin'])) {
     header('location:index.php');
     exit;
